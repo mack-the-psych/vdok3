@@ -3,4 +3,4 @@
 3. process: Overlapping, distribution and more
 4. reorganize : Re-organizing for prediction
 5. train: Training models and validations
-6. test: Test models
+6. test: Test code and models
