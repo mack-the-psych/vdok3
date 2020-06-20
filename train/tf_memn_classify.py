@@ -13,7 +13,10 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.utils import shuffle
 
 np.random.seed(0)
-tf.compat.v1.set_random_seed(1234)
+
+# Modified by mack.sano@gmail.com 6/20/2020
+# tf.compat.v1.set_random_seed(1234)
+tf.set_random_seed(1234)
 
 import tf_log_regress_classify as lreg
 
@@ -200,7 +203,7 @@ class tmv_tf_memn_classify(lreg.tmv_tf_log_regress_classify):
         loss = self.loss(self.y, a)
         
         # Modified by mack.sano@gmail.com 3/14/2020
-        tf.summary.scalar('cross_entropy', loss)  # TensorBoard 用に登録
+        tf.summary.scalar('cross_entropy', loss)  # for TensorBoard
         
         train_step = self.training(loss)
         acc = self.accuracy(self.y, a)
@@ -213,9 +216,10 @@ class tmv_tf_memn_classify(lreg.tmv_tf_log_regress_classify):
         init = tf.global_variables_initializer()
         self.sess = tf.Session()
         
-        # Modified by mack.sano@gmail.com 3/14/2020
-        file_writer = tf.compat.v1.summary.FileWriter(LOG_DIR, self.sess.graph)
-        summaries = tf.summary.merge_all()  # 登録した変数をひとまとめにする
+        # Modified by mack.sano@gmail.com 3/14/2020; 6/20/2020
+        #file_writer = tf.compat.v1.summary.FileWriter(LOG_DIR, self.sess.graph)
+        file_writer = tf.summary.FileWriter(LOG_DIR, self.sess.graph)
+        summaries = tf.summary.merge_all()  # merge all variables
         saver = tf.train.Saver(max_to_keep=3)
 
         self.sess.run(init)
