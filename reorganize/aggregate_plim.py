@@ -129,7 +129,7 @@ if __name__ == "__main__":
                                r'Questin_ID_Definition.csv', r'../data/', stop_words_pos,
                                r'Question_ID', r'Question_ID_Sec',
                                r'Question_ID', r'Question_ID_Sec')
-    agrpd.load_fex_files(r'EN-lemma-Question-Def-PRE.csv', r'EN-POS-Question-Def-PRE.csv',
+    agrpd.load_fex_files(r'EN-Lemma-Question-Def-PRE.csv', r'EN-POS-Question-Def-PRE.csv',
                          r'EN-POS-Passage-Def-PRE.csv')
     agrpd.load_overlapping_stat_files(r'Overlapping-Lemma-Def-PRE.csv', r'Overlapping-Synset-Def-PRE.csv',
                          r'Overlapping-Hypernyms-Def-PRE.csv', r'Overlapping-Hyponyms-Def-PRE.csv')
