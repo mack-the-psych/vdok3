@@ -2,7 +2,7 @@ FROM trial_plimac3
 
 RUN conda install -c anaconda setuptools
 RUN pip install --upgrade pip && \
-    pip install tensorflow==1.14.0 && \
+    pip install tensorflow==1.14.0 --user && \
     pip install ml_metrics==0.1.4 && \
     pip install --upgrade scipy==1.1.0
 
