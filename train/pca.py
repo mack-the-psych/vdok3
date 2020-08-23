@@ -2,7 +2,7 @@
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import ac_pca as apca
 
 '''
@@ -72,6 +72,8 @@ class tmv_pca:
     def perform_modeling(self, df_ac_modeling_data, key_word = r''):
         self.df_ac_pca = apca.ac_pca(df_ac_modeling_data)
 
+        print(self.df_ac_pca.loc[u'EIGEN_VALUES'])
+        '''
         ev = self.df_ac_pca.loc[u'EIGEN_VALUES']
         plt.plot(self.df_ac_pca.columns, ev, label = r'Eigenvalue', color = 'k', marker='o')
         plt.xlim([0, len(ev)])
@@ -79,6 +81,7 @@ class tmv_pca:
         plt.ylabel(r'Eigenvalue')
         plt.savefig(self.data_dir + r'PCA-scree-plot-'+ key_word + r'.tif', dpi=300)
         plt.show()
+        '''
 
 if __name__ == "__main__":
     #drop_vars = [r'POS_sum', r'PMI_Bigram_Mean']
