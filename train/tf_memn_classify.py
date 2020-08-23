@@ -8,17 +8,25 @@ import ml_metrics as metrics
 import nltk
 import nltk.data
 import sklearn.metrics as mtrx
-import tensorflow as tf
+
+# Makoto.Sano@Mack-the-Psych.com 08/22/2020
+# import tensorflow as tf
+
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.utils import shuffle
 
 np.random.seed(0)
 
+# Makoto.Sano@Mack-the-Psych.com 08/22/2020
+import tf_log_regress_classify as lreg
+import tensorflow as tf
+
 # Modified by mack.sano@gmail.com 6/20/2020
 # tf.compat.v1.set_random_seed(1234)
 tf.set_random_seed(1234)
 
-import tf_log_regress_classify as lreg
+# Makoto.Sano@Mack-the-Psych.com 08/22/2020
+# import tf_log_regress_classify as lreg
 
 # Modified by mack.sano@gmail.com 3/14/2020
 import os
