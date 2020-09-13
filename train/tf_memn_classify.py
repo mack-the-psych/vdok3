@@ -93,10 +93,12 @@ class tmv_tf_memn_classify(lreg.tmv_tf_log_regress_classify):
             tokens = []
             sentences = sent_detector.tokenize(x.strip())
             for y in sentences:
-                print(y)
+                # modified by Makoto.Sano@Mack-the-Psych.com 9/8/2020
+                # print(y)
                 tokens += nltk.word_tokenize(y)
 
-            print(tokens)
+            # modified by Makoto.Sano@Mack-the-Psych.com 9/8/2020
+            # print(tokens)
             tokens_all = tokens_all + [tokens]
 
         return tokens_all
