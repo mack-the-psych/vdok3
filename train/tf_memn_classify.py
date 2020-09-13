@@ -147,7 +147,10 @@ class tmv_tf_memn_classify(lreg.tmv_tf_log_regress_classify):
         initial_state = cell.zero_state(n_batch, tf.float32)
         state = initial_state
         outputs = []
-        with tf.variable_scope('LSTM'):
+
+        # modified by Makoto.Sano@Mack-the-Psych.com 9/8/2020
+        # with tf.variable_scope('LSTM'):
+        with tf.variable_scope('LSTM', reuse=tf.AUTO_REUSE):
             for t in range(ans_maxlen):
                 if t > 0:
                     tf.get_variable_scope().reuse_variables()
