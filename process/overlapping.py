@@ -78,18 +78,21 @@ class odi_overlapping:
             stop_words_hy = stop_words
         else:
             stop_words_hy = self.stop_words
-            
+
+        # modified by Makoto.Sano@Mack-the-Psych.com 09/21/2020
         self.df_ac_overlapping_hyper_lemma = olsy.ac_overlapping_synset_lemma(self.df_ac_lemma_q,
                                 self.question_id_clm, self.stem_option_name_clm, self.num_clm_in_q + 1, 
                                 df_ac_hypernyms_q, self.num_clm_in_q + 1, stop_words_hy,
                                 self.passage_name_clm_q, self.passage_sec_clm_q, self.df_ac_lemma_p,
-                                self.passage_name_clm_p, self.passage_sec_clm_p, self.num_clm_in_p + 1)
-                                        
+                                self.passage_name_clm_p, self.passage_sec_clm_p, self.num_clm_in_p + 1,
+                                'hype')
+        '''
         column_list = []
         for x in self.df_ac_overlapping_hyper_lemma.columns:
             column_list = column_list + [x.replace('_s_', '_hype_')]
         self.df_ac_overlapping_hyper_lemma.columns = column_list
-
+        '''
+        
     def count_overlapping_hyponyms(self, csv_file_ac_q, stop_words = None):
         df_ac_hyponyms_q = pd.read_csv(self.data_dir + csv_file_ac_q, encoding= 'latin1')        
         df_ac_hyponyms_q = df_ac_hyponyms_q.set_index('AC_Doc_ID')
@@ -98,17 +101,20 @@ class odi_overlapping:
             stop_words_hy = stop_words
         else:
             stop_words_hy = self.stop_words
-            
+
+        # modified by Makoto.Sano@Mack-the-Psych.com 09/21/2020
         self.df_ac_overlapping_hypo_lemma = olsy.ac_overlapping_synset_lemma(self.df_ac_lemma_q,
                                 self.question_id_clm, self.stem_option_name_clm, self.num_clm_in_q + 1, 
                                 df_ac_hyponyms_q, self.num_clm_in_q + 1, stop_words_hy,
                                 self.passage_name_clm_q, self.passage_sec_clm_q, self.df_ac_lemma_p,
-                                self.passage_name_clm_p, self.passage_sec_clm_p, self.num_clm_in_p + 1)
-                                        
+                                self.passage_name_clm_p, self.passage_sec_clm_p, self.num_clm_in_p + 1,
+                                'hypo')
+        '''                                
         column_list = []
         for x in self.df_ac_overlapping_hypo_lemma.columns:
             column_list = column_list + [x.replace('_s_', '_hypo_')]
         self.df_ac_overlapping_hypo_lemma.columns = column_list
+        '''
         
 if __name__ == "__main__":
     stop_words_d = [r'a', r'be', r'to', r'and', r'or']
