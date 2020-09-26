@@ -99,6 +99,7 @@ class tmv_tf_pca_classify(svmc.tmv_svm_classify):
                         [r'Score_Class'])
         self.df_ac_classified[self.dependent_var] = self.df_ac_predict_target[self.dependent_var]
 
+    # Modified by Makoto.Sano@Mack-the-Psych.com on 09/26/2020
     def modeling_prediction_evaluation_all(self, key_word = r'', csv_dump = False, number_class = 3,
                                            epochs = 200, use_model_mean_std = False, number_component = 2):
         self.df_ac_predict_target_all = pd.DataFrame()
@@ -121,11 +122,19 @@ class tmv_tf_pca_classify(svmc.tmv_svm_classify):
             self.predict_res_all = np.append(self.predict_res_all, self.predict_res)
             if len(self.df_ac_classified_all) == 0:
                 self.df_ac_classified_all = self.df_ac_classified.copy()
+                self.df_indices_all = pd.DataFrame(self.se_indices)
             else:
                 self.df_ac_classified_all = self.df_ac_classified_all.append(self.df_ac_classified)
-        
+                self.df_indices_all = pd.concat([self.df_indices_all, self.se_indices], axis=1)
+
+        self.df_indices_all = self.df_indices_all.T
         print(r'----------------')
-        print(r'ALL DATA:')
+        print(r'ALL DATA (Macro Average):')
+        print(self.df_indices_all.describe())
+        if csv_dump == True:
+            self.df_indices_all.describe().to_csv(self.data_dir + r'Classified-Prediction-Indices-Macro-' + key_word + r'.csv', encoding= 'latin1')
+        print(r'----------------')
+        print(r'ALL DATA (Micro Average):')
         self.evaluate_prediction(key_word, csv_dump = True,
                 df_ac_predict_target = self.df_ac_predict_target_all, predict_res = self.predict_res_all)
 
