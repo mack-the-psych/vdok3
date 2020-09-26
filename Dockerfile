@@ -8,7 +8,7 @@ RUN pip install --upgrade pip && \
     pip uninstall -y numpy \
     pip install numpy==1.16.4 \
     pip uninstall -y gast \
-    pip install gast==0.2.2 \
+    pip install gast==0.2.2
 
 WORKDIR /workdir
 RUN git clone https://github.com/mack-the-psych/vdok3.git
