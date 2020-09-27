@@ -145,7 +145,8 @@ class tmv_tf_memn_classify(lreg.tmv_tf_log_regress_classify):
         o = tf.transpose(o, perm=[0, 2, 1])
         ou = tf.concat([o, u], axis=-1)
 
-        cell = tf.contrib.rnn.BasicLSTMCell(embedding_dim//2, forget_bias=1.0)
+        # modified by Makoto.Sano@Mack-the-Psych.com 9/26/2020
+        cell = tf.contrib.rnn.BasicLSTMCell(embedding_dim//2, forget_bias=1.0, name='celula')
         initial_state = cell.zero_state(n_batch, tf.float32)
         state = initial_state
         outputs = []
@@ -164,7 +165,8 @@ class tmv_tf_memn_classify(lreg.tmv_tf_log_regress_classify):
         W = weight_variable([embedding_dim//2, number_class], stddev=0.01, name='W')
         b = bias_variable([number_class], name='b')
 
-        a = tf.nn.softmax(tf.matmul(output, W) + b)
+        # modified by Makoto.Sano@Mack-the-Psych.com 9/26/2020
+        a = tf.nn.softmax(tf.matmul(output, W) + b, name='a')
 
         return a
 
@@ -366,6 +368,42 @@ class tmv_tf_memn_classify(lreg.tmv_tf_log_regress_classify):
         self.evaluate_prediction(key_word, csv_dump = True,
                 df_ac_predict_target = self.df_ac_predict_target_all, predict_res = self.predict_res_all)
 
+    # Modified by Makoto.Sano@Mack-the-Psych.com on 09/27/2020
+    def restore_model(self, ckpt_path, number_class = 3, embedding_dim = 64):
+        tf.reset_default_graph()
+        x = tf.placeholder(tf.int32, shape=[None, self.ans_ex_maxlen])
+        q = tf.placeholder(tf.int32, shape=[None, self.ans_maxlen])
+        a = tf.placeholder(tf.float32, shape=[None, number_class])
+        n_batch = tf.placeholder(tf.int32, shape=[])
+
+        self.y = self.inference(x, q, n_batch, number_class,
+                      vocab_size=self.vocab_size,
+                      embedding_dim=embedding_dim,
+                      ans_maxlen=self.ans_maxlen)
+        loss = self.loss(self.y, a)
+        
+        tf.summary.scalar('cross_entropy', loss)  # for TensorBoard
+        
+        train_step = self.training(loss)
+        acc = self.accuracy(self.y, a)
+        history = {
+            'val_loss': [],
+            'val_acc': []
+        }
+        
+        saver = tf.train.Saver()
+        self.sess = tf.Session()
+        
+        saver.restore(self.sess, ckpt_path)
+
+        # self.sess.run(init)
+
+        self.x = x
+        self.q = q
+        self.a = a
+        self.n_batch = n_batch
+
+        
 if __name__ == "__main__":
     number_data_set = 4
     csv_dump = True
