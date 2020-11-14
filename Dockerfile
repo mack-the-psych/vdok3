@@ -8,7 +8,12 @@ RUN pip install --upgrade pip && \
     pip uninstall --yes numpy && \
     pip install numpy==1.16.4 && \
     pip uninstall --yes gast && \
-    pip install gast==0.2.2
+    pip install gast==0.2.2 && \
+    conda install pytorch==1.0.0 torchvision==0.2.1 cpuonly -c pytorch && \
+    pip install torchtext==0.4.0 && \
+    pip install attrdict==2.0.1
 
 WORKDIR /workdir
 RUN git clone https://github.com/mack-the-psych/vdok3.git
+WORKDIR /workdir/vdok3/train/pytorch_advanced/nlp_sentiment_bert
+RUN make_folders_and_data_downloads.py
