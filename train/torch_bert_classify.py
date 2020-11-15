@@ -371,11 +371,11 @@ class BertForVDOK(nn.Module):
 if __name__ == "__main__":
     number_data_set = 4
     csv_dump = True
-    epochs = 1
+    epochs = 2
     dependent_var = r'Definition-Score'
     task_word = r'Definition'
     number_class = 3
-    top_to = 1000
+    top_to = 400
 
     df_response_answer = pd.read_csv(r'../data/' + r'Serialized-Def-ELVA.PILOT.PRE-TEST.csv', encoding= 'latin1')
     df_response_answer.iloc[:top_to, :].to_csv(r'../data/' + 'Top-to-' + str(top_to) + r'-Serialized-Def-ELVA.PILOT.PRE-TEST.csv', encoding= 'latin1')

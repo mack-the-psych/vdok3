@@ -15,5 +15,14 @@ RUN pip install --upgrade pip && \
 
 WORKDIR /workdir
 RUN git clone https://github.com/mack-the-psych/vdok3.git
+
+RUN echo "/workdir/vdok3/prep" > /opt/conda/lib/python3.6/site-packages/vdok3-custom.pth
+RUN echo "/workdir/vdok3/extract" >> /opt/conda/lib/python3.6/site-packages/vdok3-custom.pth
+RUN echo "/workdir/vdok3/process" >> /opt/conda/lib/python3.6/site-packages/vdok3-custom.pth
+RUN echo "/workdir/vdok3/reorganize" >> /opt/conda/lib/python3.6/site-packages/vdok3-custom.pth
+RUN echo "/workdir/vdok3/train" >> /opt/conda/lib/python3.6/site-packages/vdok3-custom.pth
+RUN echo "/workdir/vdok3/train/pytorch_advanced/nlp_sentiment_bert" >> /opt/conda/lib/python3.6/site-packages/vdok3-custom.pth
+
 WORKDIR /workdir/vdok3/train/pytorch_advanced/nlp_sentiment_bert
-RUN make_folders_and_data_downloads.py
+RUN python make_folders_and_data_downloads.py
+WORKDIR /workdir
