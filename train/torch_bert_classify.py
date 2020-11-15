@@ -45,18 +45,19 @@ random.seed(random_seed)
 import tf_log_regress_classify as lreg
 
 class tmv_torch_bert_classify(lreg.tmv_tf_log_regress_classify):
-    def __init__(self, data_dir=r'./'):
+    def __init__(self, data_dir=r'./', bert_dir=r'./pytorch_advanced/nlp_sentiment_bert/'):
         self.data_dir = data_dir
+        self.bert_dir = bert_dir
         self.tokenizer_bert = BertTokenizer(
-            vocab_file="./pytorch_advanced/nlp_sentiment_bert/vocab/bert-base-uncased-vocab.txt",
+            vocab_file=self.bert_dir+"vocab/bert-base-uncased-vocab.txt",
             do_lower_case=True)
         self.vocab_bert, self.ids_to_tokens_bert = load_vocab(
-            vocab_file="./pytorch_advanced/nlp_sentiment_bert/vocab/bert-base-uncased-vocab.txt")
+            vocab_file=self.bert_dir+"vocab/bert-base-uncased-vocab.txt")
 
-        config = get_config(file_path="./pytorch_advanced/nlp_sentiment_bert/weights/bert_config.json")
+        config = get_config(file_path=self.bert_dir+"weights/bert_config.json")
         self.net_bert = BertModel(config)
         self.net_bert = set_learned_params(self.net_bert,
-                weights_path="./pytorch_advanced/nlp_sentiment_bert/weights/pytorch_model.bin")
+                weights_path=self.bert_dir+"weights/pytorch_model.bin")
                 
     def load_data(self, csv_file_kspa, dependent_var, langs = None, task_word = 'Definition',
                   answer_ex_clm = 'Definition'):
@@ -160,7 +161,7 @@ class tmv_torch_bert_classify(lreg.tmv_tf_log_regress_classify):
         print(text)
 
         print('Building model...')
-        net = BertForVDOK(self.net_bert)
+        net = BertForVDOK(self.net_bert, number_class)
         net.train()
                 
         for name, param in net.named_parameters():
@@ -181,7 +182,7 @@ class tmv_torch_bert_classify(lreg.tmv_tf_log_regress_classify):
 
         self.net_trained = self.train_model(net, self.dataloaders_dict, self.criterion, optimizer, num_epochs=epochs)
 
-        save_path = './pytorch_advanced/nlp_sentiment_bert/weights/bert_fine_tuning_VDOK_' + key_word + '.pth'
+        save_path = self.bert_dir + 'weights/bert_fine_tuning_VDOK_' + key_word + '.pth'
         torch.save(self.net_trained.state_dict(), save_path)
         
     def train_model(self, net, dataloaders_dict, criterion, optimizer, num_epochs):
@@ -340,7 +341,7 @@ class tmv_torch_bert_classify(lreg.tmv_tf_log_regress_classify):
                 df_ac_predict_target = self.df_ac_predict_target_all, predict_res = self.predict_res_all)
 
 class BertForVDOK(nn.Module):
-    def __init__(self, net_bert):
+    def __init__(self, net_bert, number_class):
         super(BertForVDOK, self).__init__()
 
         self.bert = net_bert
@@ -371,16 +372,16 @@ class BertForVDOK(nn.Module):
 if __name__ == "__main__":
     number_data_set = 4
     csv_dump = True
-    epochs = 2
+    epochs = 1
     dependent_var = r'Definition-Score'
     task_word = r'Definition'
     number_class = 3
-    top_to = 400
+    top_to = 200
 
     df_response_answer = pd.read_csv(r'../data/' + r'Serialized-Def-ELVA.PILOT.PRE-TEST.csv', encoding= 'latin1')
     df_response_answer.iloc[:top_to, :].to_csv(r'../data/' + 'Top-to-' + str(top_to) + r'-Serialized-Def-ELVA.PILOT.PRE-TEST.csv', encoding= 'latin1')
     
-    bertd = tmv_torch_bert_classify(r'../data/')
+    bertd = tmv_torch_bert_classify(r'../data/', r'./pytorch_advanced/nlp_sentiment_bert/')
     # bertd.load_data(r'Serialized-Def-ELVA.PILOT.PRE-TEST.csv', dependent_var, [0, 1], task_word)
     bertd.load_data('Top-to-' + str(top_to) + r'-Serialized-Def-ELVA.PILOT.PRE-TEST.csv',
                     dependent_var, [0, 1], task_word)

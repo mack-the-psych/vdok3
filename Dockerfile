@@ -5,6 +5,7 @@ RUN pip install --upgrade pip && \
     pip install tensorflow==1.14.0 --user && \
     pip install ml_metrics==0.1.4 && \
     pip install --upgrade scipy==1.1.0 && \
+    conda clean --all && \
     conda install pytorch==1.0.0 torchvision==0.2.1 cpuonly -c pytorch && \
     pip install torchtext==0.4.0 && \
     pip install attrdict==2.0.1 && \
