@@ -34,7 +34,9 @@ import torch.optim as optim
 import torchtext
 from utils.bert import BertTokenizer, load_vocab
 from utils.bert import get_config, BertModel, set_learned_params
-        
+
+import cloudpickle
+
 max_length = 128
 random_seed = 0
 
@@ -118,10 +120,12 @@ class tmv_torch_bert_classify(lreg.tmv_tf_log_regress_classify):
         TEXT.vocab.stoi = self.vocab_bert
 
         return train_val_ds
-        
+
+    # Modified by Makoto.Sano@Mack-the-Psych.com 11/22/2020
     def perform_modeling(self, df_ac_modeling_data, key_word = r'', csv_dump = False,
                          number_class = 3, epochs = 10, batch_size = 32,
-                         tmp_csv_name = 'TORCH_RESPONSE_ANSWER_EX_FILE.CSV'):
+                         tmp_csv_name = 'TORCH_RESPONSE_ANSWER_EX_FILE.CSV',
+                         bert_pkl_name = 'weights/bert_fine_tuning_VDOK_'):
         self.modeling_data_file_name = self.data_dir + tmp_csv_name
         self.batch_size = batch_size
         df_ac_modeling_data_buf = df_ac_modeling_data.copy()
@@ -182,8 +186,12 @@ class tmv_torch_bert_classify(lreg.tmv_tf_log_regress_classify):
 
         self.net_trained = self.train_model(net, self.dataloaders_dict, self.criterion, optimizer, num_epochs=epochs)
 
-        save_path = self.bert_dir + 'weights/bert_fine_tuning_VDOK_' + key_word + '.pth'
-        torch.save(self.net_trained.state_dict(), save_path)
+        # Modified by Makoto.Sano@Mack-the-Psych.com 11/22/2020
+        # save_path = self.bert_dir + 'weights/bert_fine_tuning_VDOK_' + key_word + '.pth'
+        # torch.save(self.net_trained.state_dict(), save_path)
+        save_path = self.bert_dir + bert_pkl_name + key_word + '.pkl'
+        with open(save_path, 'wb') as f:
+            cloudpickle.dump(self.net_trained, f)
         
     def train_model(self, net, dataloaders_dict, criterion, optimizer, num_epochs):
         device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
@@ -339,6 +347,16 @@ class tmv_torch_bert_classify(lreg.tmv_tf_log_regress_classify):
         print(r'ALL DATA (Micro Average):')
         self.evaluate_prediction(key_word, csv_dump = True,
                 df_ac_predict_target = self.df_ac_predict_target_all, predict_res = self.predict_res_all)
+
+    # Modified by Makoto.Sano@Mack-the-Psych.com on 11/22/2020
+    def restore_model(self, key_word = r'', tmp_csv_name = 'TORCH_RESPONSE_ANSWER_EX_FILE.CSV',
+                      bert_pkl_name = 'weights/bert_fine_tuning_VDOK_', batch_size = 32):
+        self.modeling_data_file_name = self.data_dir + tmp_csv_name
+        self.batch_size = batch_size
+        save_path = self.bert_dir + bert_pkl_name + key_word + '.pkl'
+        with open(save_path, 'rb') as f:
+            self.net_trained = cloudpickle.load(f)
+        self.criterion = nn.CrossEntropyLoss()
 
 class BertForVDOK(nn.Module):
     def __init__(self, net_bert, number_class):
